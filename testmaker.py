@@ -15,8 +15,9 @@ import config
 json_filename = "combined-template.json"
 save_as = "output-survey.qsf"
 # audio templates should not be changed
-audio_html_template = "audio_template.html"
-play_button = "play_button.html"
+audio_html_template = "templates/audio_template.html"
+audio_with_label_html_template = "templates/audio_template_with_label.html"
+play_button = "templates/play_button.html"
 
 # load JSON template from file
 def get_basis_json():
@@ -33,6 +34,10 @@ def get_player_html(url):
 def get_play_button(url, n): # player n associates play button with a specific audio
     with open(play_button) as html_file:
         return Template(html_file.read()).substitute(url=url, player=n)
+
+def get_audio_with_label(url, n, label): # player n associates play button with a specific audio
+    with open(audio_with_label_html_template) as html_file:
+        return Template(html_file.read()).substitute(url=url, player=n, label=label)
 
 # makes lists of formatted urls from the filenames in the config file
 def format_urls(question_type, file_1, file_2=None, file_3=None):
@@ -56,15 +61,31 @@ def format_urls(question_type, file_1, file_2=None, file_3=None):
             elif question_type == 'mushra': # returns test & reference url lists
                 lines = f1.readlines()
                 # make ref audio urls to embedded in the question text
-                ref_url_list =  [os.path.join(config.mushra_root,
+                ref_url_list =  [os.path.join(config.hosted_audio_root,
                                 config.mushra_ref_folder,
                                 line.replace("\n", ""))for line in lines]
                 # creates list containing sets of urls which vary only by folder name
-                test_url_list = [[os.path.join(config.mushra_root,
+                test_url_list = [[os.path.join(config.hosted_audio_root,
                                 folder, line.replace("\n", ""))
                                 for folder in config.mushra_folders]
                                 for line in lines]
                 return test_url_list, ref_url_list
+            elif question_type == 'rank':
+                lines = f1.readlines()
+                # we want to return the number of items to compare per question (samples per file line)
+                num_samples = len(lines[-1].split(" "))
+                # make ref audio urls to embedded in the question-option text
+                ref_url_list =  [[os.path.join(config.hosted_audio_root, sample)
+                                for sample in line.replace("\n", "").split(" ")]
+                                for line in lines]
+                # ensure file is clean and is as expected with {num_samples} per line
+                rank_num_to_compare = len(ref_url_list[0])
+                for i, urls in enumerate(ref_url_list):
+                    try:
+                        assert len(urls) == rank_num_to_compare
+                    except:
+                        raise AssertionError(f"{len(urls)} urls found on line number {i+1}. Expected {rank_num_to_compare}. Check {config.rank_file}.")
+                return ref_url_list, None
 
 # load sentences from text file, to be embedded into MC question text
 def get_sentences(sentence_file):
@@ -125,6 +146,20 @@ def mushra_q(new_q, urls, qid):
                     'LeftOperand' : f"q://QID{qid}/ChoiceNumericEntryValue/{i+1}"})
     return new_q
 
+def rank_q(new_q, urls, qid):
+    choice_template = new_q['Payload']['Choices']['1']# make choice template
+    # empty 'Choices' so flexible number can be added using Choice template
+    new_q['Payload']['Choices'] = {}
+    variable_names = {}
+    for i, url in enumerate(urls):
+        choice = copy.deepcopy(choice_template)
+        audio_id = (qid-1)*len(urls)+i+qid # unique int id for every sample
+        choice['Display'] = get_audio_with_label(url, audio_id, i+1) # add audio player as choice
+        new_q['Payload']['Choices'][f'{i+1}'] = choice
+        variable_names[i+1] = url
+    new_q['Payload']['VariableNaming'] = variable_names
+
+    return new_q
 
 # make n new blocks according to the survey_length
 def make_blocks(num_questions, basis_blocks):
@@ -135,6 +170,8 @@ def make_blocks(num_questions, basis_blocks):
         block_element['Type'] = 'Question'
         block_element['QuestionID'] = f'QID{i}'
         block_elements.append(block_element)
+        if config.page_breaks_between_questions and i != num_questions:
+            block_elements.append({ "Type": "Page Break" })
     new_blocks['Payload'][0]['BlockElements'] = block_elements
     return new_blocks
 
@@ -158,31 +195,34 @@ def main():
                         help="make MUSHRA questions with sliders")
     parser.add_argument("-mos", action='store_true',
                         help="make Mean Opinion Score questions with sliders")
-
-    args = parser.parse_args()
+    ranking_group = parser.add_argument_group("ranking", "make questions that ask user to rank.")
+    ranking_group.add_argument("-rank", action='store_true', 
+                        help="make ranking questions.")
+    _args = parser.parse_args()
 
     # get only args which were specified on command line
-    args = [key for key, value in vars(args).items() if value==True]
-
+    args = [key for key, value in vars(_args).items() if value==True]
+    
     # store the arguments passed to format_urls() when executed
     argument_dict = {'ab':[config.ab_file1, config.ab_file2],
                      'abc':[config.abc_file1, config.abc_file2, config.abc_file3],
                      'mc':[config.mc_file],
                      'trs':[config.trs_file],
                      'mushra':[config.mushra_files],
-                     'mos':[config.mos_file]
+                     'mos':[config.mos_file],
+                     'rank':[config.rank_file],
                      }
     # create a dictionary with key=command line arg & value= output of format_urls()
     # function's arguments are taken from argument_dict
 
     url_dict = {arg:format_urls(arg, *argument_dict[arg]) for arg in args}
-
+    
     # format_urls() returns tuple of urls & anything else that's embedded in question
     # (for MC & trs it's the sentence text, for MUSHRA it's the reference URL)
     # split dictionary value tuples into keyyed subdictionary
     for key, value in url_dict.items():
         url_dict[key] = {'urls' : value[0], 'extra':value[1]}
-
+    
     # get sentences from file to embed in multiple choice questions
     mc_sentences = get_sentences(config.mc_sentence_file)
 
@@ -193,17 +233,15 @@ def main():
     # Set the survey ID in all survey_elements
     elements = list(map(set_id, elements))
 
-
     # get question template blocks from elements JSON
     # element order is survey-dependent- check if you're using a new template
-
-
     basis_question_dict = {'ab': elements[13],
                            'mc': elements[9],
                            'trs':elements[12],
                            'abc': elements[14],
                            'mushra': elements[10],
-                           'mos':elements[11]}
+                           'mos':elements[11],
+                           'rank':elements[15]}
 
     # update multiple choice answer text in template to save computation
     (basis_question_dict['mc']['Payload']['Choices']
@@ -232,7 +270,8 @@ def main():
                     'mushra': f"{config.mushra_question_text}\
                                 {get_play_button('$ref_url', '$ref_id')}",
                     'mos': f"{config.mos_question_text}\
-                             {get_player_html('$urls')}" }
+                             {get_player_html('$urls')}",
+                    'rank': config.rank_question_text }
 
     # keys=question types and values= functions for making questions
     handler_dict = {'ab': ab_q,
@@ -240,7 +279,8 @@ def main():
                     'mc': None,
                     'trs': None,
                     'mushra': mushra_q,
-                    'mos': None}
+                    'mos': None,
+                    'rank': rank_q}
 
     # create list to store generated question blocks
     questions = []

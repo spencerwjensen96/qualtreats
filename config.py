@@ -9,6 +9,7 @@ mc_question_text= "Are there any errors in this speech sample?"
 trs_question_text = "Please type the sentence you hear in this audio sample."
 mushra_question_text = "How natural are the following speech recordings? <br> Reference: "
 mos_question_text = "Listen to this speech sample, then rate the quality of the speech."
+rank_question_text = "Order these utterences in terms of x. 1 (best) 3 (worst)."
 # the answer options for multiple choice questions
 mc_choice_text = ['Yes', 'No']
 
@@ -22,11 +23,11 @@ abc_file3 = "resources/abc-urls-3.txt"
 mc_file = "resources/mc-urls.txt"
 trs_file = "resources/trs-urls.txt"
 mos_file = "resources/mos-urls.txt"
+rank_file = "resources/rank-urls.txt"
 # mushra filenames should be the same across folders
 # audiofile urls should vary only by folder name
 # any number of folders can be specified
 mushra_files = "resources/mushra-urls.txt"
-mushra_root = "https://groups.inf.ed.ac.uk/cstr3/cvbotinh/Mushra_example/samples"
 # the hidden reference folder should be included in both mushra_folders and mushra_ref_folder
 mushra_folders = ["G1","G1H","G1HA","G1TH", "G1THA"]
 mushra_ref_folder = "G1THA"
@@ -34,3 +35,9 @@ mushra_ref_folder = "G1THA"
 # MC questions have sentence text embedded
 # this file should have a filename and corresponding sentence string per line
 mc_sentence_file = "resources/sentences.txt"
+
+# Publicly available URL where audiofiles are hosted
+hosted_audio_root = "https://groups.inf.ed.ac.uk/cstr3/cvbotinh/Mushra_example/samples"
+
+# Configure page breaks between questions
+page_breaks_between_questions = True

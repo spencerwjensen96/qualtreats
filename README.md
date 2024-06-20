@@ -29,6 +29,7 @@ It currently supports:
 - Transcription questions (‘Listen to this audio clip and type what you hear.’)
 - MUSHRA style questions (MUltiple Stimuli with Hidden Reference and Anchor)
 - MOS test questions (Mean Opinion Score, with 1:5 slider scale)
+- Ranking style questions (‘Order these utterences in terms of X.’)
 
 See a demo test showcasing each question type [here](https://edinburghinformatics.eu.qualtrics.com/jfe/form/SV_0PrKc4KQ7jDXxLn).
 
@@ -82,6 +83,9 @@ Default question settings are determined by the template file `combined-template
 #### Transcription questions
 - Audio playback is disabled for transcription tests (so each audio clip can be played only once).
 
+#### Page Breaks
+- the setting `page_breaks_between_questions` in `config.py` controls whether to add a page break between each question of the survey.
+
 #### MUSHRA questions
 - The default HTML5 audio player is replaced by a simple play/pause button, as the hidden reference could be identified by its duration.
 - At least one sample must be rated == 100 (in line with the guidelines set out in ITU-R BS.1534-1).
@@ -100,6 +104,7 @@ Flags:
 - `-trs` = audio transcription
 - `-mushra` = MUSHRA
 - `-mos` = MOS
+- `-rank` = Ranking
 
 Questions will be added to the output test for each flag supplied, following the order shown above.
 

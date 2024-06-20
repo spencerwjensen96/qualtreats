@@ -1,0 +1,2 @@
+wav1.wav wav2.wav wav3.wav
+utt1.wav utt2.wav utt3.wav

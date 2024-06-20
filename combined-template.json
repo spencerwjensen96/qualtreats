@@ -85,7 +85,7 @@
                 "Type": "Root"
             }
         },
-            {
+        {
             "SurveyID": "SV_82GxylVdVIF3r7v",
             "Element": "PL",
             "PrimaryAttribute": "Preview Link",
@@ -744,6 +744,49 @@
                     "TotalRandSubset": ""
                 }
             }
-        }
+        },
+        {
+            "SurveyID": "SV_82GxylVdVIF3r7v",
+            "Element": "SQ",
+            "PrimaryAttribute": "QID1",
+            "SecondaryAttribute": "Order these utterences in terms of X.",
+            "TertiaryAttribute": null,
+            "Payload": {
+              "QuestionText": "Order these utterences in terms of X.",
+              "DefaultChoices": false,
+              "DataExportTag": "Q1",
+              "QuestionID": "QID1",
+              "QuestionType": "RO",
+              "Selector": "DND",
+              "SubSelector": "TX",
+              "DataVisibility": { "Private": false, "Hidden": false },
+              "Configuration": { "QuestionDescriptionOption": "UseText" },
+              "QuestionDescription": "Order these utterences in terms of X.",
+              "Choices": {
+                "1": {
+                  "Display": "<div style=\"display: flex; align-items: center;\"><div>1: </div><audio class=\"qmedia\" controls=\"true\" height=\"40\" preload=\"auto\" width=\"320\"><source src=\"https://$url\" type=\"audio/wav\" /><embed class=\"qmedia\" flashconsts=\"file=https://$url&amp;width=320&amp;height=20&amp;type=wav&amp;autostart=false\" height=\"20\" pluginspage=\"http://adobe.com/flashplayer/\" src=\"/WRQualtricsShared/Flash/flvplayer.swf\" type=\"application/x-shockwave-flash\" width=\"320\" wmode=\"transparent\" /></audio></div>"
+                },
+                "2": {
+                  "Display": "<div style=\"display: flex; align-items: center;\"><div>2: </div><audio class=\"qmedia\" controls=\"true\" height=\"40\" preload=\"auto\" width=\"320\"><source src=\"https://$url\" type=\"audio/wav\" /><embed class=\"qmedia\" flashconsts=\"file=https://$url&amp;width=320&amp;height=20&amp;type=wav&amp;autostart=false\" height=\"20\" pluginspage=\"http://adobe.com/flashplayer/\" src=\"/WRQualtricsShared/Flash/flvplayer.swf\" type=\"application/x-shockwave-flash\" width=\"320\" wmode=\"transparent\" /></audio></div>"
+                },
+                "3": {
+                  "Display": "<div style=\"display: flex; align-items: center;\"><div>3: </div><audio class=\"qmedia\" controls=\"true\" height=\"40\" preload=\"auto\" width=\"320\"><source src=\"https://$url\" type=\"audio/wav\" /><embed class=\"qmedia\" flashconsts=\"file=https://$url&amp;width=320&amp;height=20&amp;type=wav&amp;autostart=false\" height=\"20\" pluginspage=\"http://adobe.com/flashplayer/\" src=\"/WRQualtricsShared/Flash/flvplayer.swf\" type=\"application/x-shockwave-flash\" width=\"320\" wmode=\"transparent\" /></audio></div>"
+                }
+              },
+              "ChoiceOrder": [1, 2, 3],
+              "Validation": {
+                "Settings": { "ForceResponse": "OFF", "Type": "None" }
+              },
+              "GradingData": [],
+              "Language": [],
+              "NextChoiceId": 4,
+              "NextAnswerId": 1,
+              "VariableNaming": {
+                "1": "<div style=\"display: flex; align-items: center;\"><div>1: </div><audio class=\"qmedia\" controls=\"true\" height=\"40\" preload=\"auto\" width=\"320\"><source src=\"https://$url\" type=\"audio/wav\" /><embed class=\"qmedia\" flashconsts=\"file=https://$url&amp;width=320&amp;height=20&amp;type=wav&amp;autostart=false\" height=\"20\" pluginspage=\"http://adobe.com/flashplayer/\" src=\"/WRQualtricsShared/Flash/flvplayer.swf\" type=\"application/x-shockwave-flash\" width=\"320\" wmode=\"transparent\" /></audio></div>",
+                "2": "<div style=\"display: flex; align-items: center;\"><div>2: </div><audio class=\"qmedia\" controls=\"true\" height=\"40\" preload=\"auto\" width=\"320\"><source src=\"https://$url\" type=\"audio/wav\" /><embed class=\"qmedia\" flashconsts=\"file=https://$url&amp;width=320&amp;height=20&amp;type=wav&amp;autostart=false\" height=\"20\" pluginspage=\"http://adobe.com/flashplayer/\" src=\"/WRQualtricsShared/Flash/flvplayer.swf\" type=\"application/x-shockwave-flash\" width=\"320\" wmode=\"transparent\" /></audio></div>",
+                "3": "<div style=\"display: flex; align-items: center;\"><div>3: </div><audio class=\"qmedia\" controls=\"true\" height=\"40\" preload=\"auto\" width=\"320\"><source src=\"https://$url\" type=\"audio/wav\" /><embed class=\"qmedia\" flashconsts=\"file=https://$url&amp;width=320&amp;height=20&amp;type=wav&amp;autostart=false\" height=\"20\" pluginspage=\"http://adobe.com/flashplayer/\" src=\"/WRQualtricsShared/Flash/flvplayer.swf\" type=\"application/x-shockwave-flash\" width=\"320\" wmode=\"transparent\" /></audio></div>"
+              }
+            }
+          }
     ]
 }
