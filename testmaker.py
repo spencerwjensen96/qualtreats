@@ -156,6 +156,7 @@ def rank_q(new_q, urls, qid):
         audio_id = (qid-1)*len(urls)+i+qid # unique int id for every sample
         choice['Display'] = get_audio_with_label(url, audio_id, i+1) # add audio player as choice
         new_q['Payload']['Choices'][f'{i+1}'] = choice
+        new_q['Payload']['ChoiceOrder'] = list(range(1, len(urls)+1))
         variable_names[i+1] = url
     new_q['Payload']['VariableNaming'] = variable_names
 
