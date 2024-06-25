@@ -76,7 +76,7 @@ def format_urls(question_type, file_1, file_2=None, file_3=None):
                 num_samples = len(lines[-1].split(" "))
                 # make ref audio urls to embedded in the question-option text
                 ref_url_list =  [[os.path.join(config.hosted_audio_root, sample)
-                                for sample in line.replace("\n", "").split(" ")]
+                                for sample in line.strip().split(" ")]
                                 for line in lines]
                 # ensure file is clean and is as expected with {num_samples} per line
                 rank_num_to_compare = len(ref_url_list[0])
